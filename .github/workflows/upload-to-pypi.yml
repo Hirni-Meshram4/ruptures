@@ -53,9 +53,9 @@ jobs:
             arch: aarch64
             bitness: 64
             platform_id: manylinux_aarch64
-          - os: ubuntu-latest
-            bitness: 32
-            platform_id: manylinux_i686
+          #- os: ubuntu-latest
+           # bitness: 32
+            #platform_id: manylinux_i686
           - os: macos-latest
             bitness: 64
             platform_id: macosx_x86_64
