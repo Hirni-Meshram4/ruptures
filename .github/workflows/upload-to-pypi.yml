@@ -35,8 +35,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        bitness: [64]
         python: [36, 37, 38, 39]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
