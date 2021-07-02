@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        #bitness: [32, 64]
+        bitness: [32, 64]
         python: [36, 37, 38, 39]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
@@ -65,6 +65,8 @@ jobs:
             platform_id: macosx_x86_64
             arch: auto universal2
         exclude:
+          - os: macos-latest
+            bitness: 32
           - os: windows-latest
             python: 39
     steps:
