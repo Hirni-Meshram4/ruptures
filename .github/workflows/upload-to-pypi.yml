@@ -46,12 +46,15 @@ jobs:
           - os: windows-latest
             bitness: 64
             platform_id: win_amd64
+            arch: auto
           - os: windows-latest
             bitness: 32
             platform_id: win32
+            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux_x86_64
+            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux2014_aarch64
@@ -59,9 +62,11 @@ jobs:
           - os: ubuntu-latest
             bitness: 32
             platform_id: manylinux_i686
+            arch: auto
           - os: macos-latest
             bitness: 64
             platform_id: macosx_x86_64
+            arch: auto universal2
         exclude:
           - os: macos-latest
             bitness: 32
