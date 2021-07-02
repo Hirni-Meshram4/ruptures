@@ -36,6 +36,7 @@ jobs:
     strategy:
       matrix:
         python: [36, 37, 38, 39]
+        arch: [x86_64, aarch64]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
           - os: ubuntu-latest
