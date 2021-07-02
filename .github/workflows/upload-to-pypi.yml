@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Set up QEMU
-      if: ${{ matrix.arch == 'aarch64' }}
+      if: ${{ matrix.arch }} == 'aarch64'
       uses: docker/setup-qemu-action@v1
     - name: Setup Python
       uses: actions/setup-python@v2
@@ -34,7 +34,7 @@ jobs:
       run: twine check dist/*
 
   build_wheels:
-    name: Build wheels on ${{matrix.platform_id}} for ${{ matrix.os }}
+    name: Build wheels on ${{matrix.platform_id}}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
