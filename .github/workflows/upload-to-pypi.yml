@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Set up QEMU
+      if: ${{ matrix.arch == 'aarch64' }}
+      uses: docker/setup-qemu-action@v1
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
@@ -31,32 +34,44 @@ jobs:
       run: twine check dist/*
 
   build_wheels:
-    name: Build wheels ${{ matrix.platform_id }}
+    name: Build wheels on ${{matrix.platform_id} for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        bitness: [32, 64]
         python: [36, 37, 38, 39]
-        arch: [x86_64, aarch64]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
+          - os: windows-latest
+            bitness: 64
+            platform_id: win_amd64
+          - os: windows-latest
+            bitness: 32
+            platform_id: win32
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux_x86_64
           - os: ubuntu-latest
-            arch: aarch64
             bitness: 64
-            platform_id: manylinux_aarch64
+            platform_id: manylinux2014_aarch64
+          - os: ubuntu-latest
+            bitness: 32
+            platform_id: manylinux_i686
+          - os: macos-latest
+            bitness: 64
+            platform_id: macosx_x86_64
+        exclude:
+          - os: macos-latest
+            bitness: 32
+          - os: windows-latest
+            python: 39
     steps:
       - uses: actions/checkout@v1
-      
-      - name: Set up QEMU
-        if: ${{ matrix.arch == 'aarch64' }}
-        uses: docker/setup-qemu-action@v1
-      
+
       - name: Build wheels
         uses: joerick/cibuildwheel@v1.9.0
         env:
-          CIBW_ARCHS_LINUX: ${{matrix.arch}}
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
           CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
