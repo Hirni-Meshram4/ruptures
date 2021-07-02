@@ -31,7 +31,7 @@ jobs:
       run: twine check dist/*
 
   build_wheels:
-    name: Build wheels on ${{matrix.platform_id}}
+    name: Build wheels on ${{matrix.platform_id}} for ${{matrix.arch}}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
