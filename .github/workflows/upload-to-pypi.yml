@@ -64,11 +64,11 @@ jobs:
             bitness: 64
             platform_id: macosx_x86_64
             arch: auto universal2
-        exclude:
-          - os: macos-latest
-            bitness: 32
-          - os: windows-latest
-            python: 39
+        #exclude:
+          #- os: macos-latest
+         #   bitness: 32
+          #- os: windows-latest
+           # python: 39
     steps:
       - uses: actions/checkout@v1
 
