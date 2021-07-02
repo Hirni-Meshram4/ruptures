@@ -55,6 +55,7 @@ jobs:
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux2014_aarch64
+            arch: aarch64
           - os: ubuntu-latest
             bitness: 32
             platform_id: manylinux_i686
@@ -72,6 +73,7 @@ jobs:
       - name: Build wheels
         uses: joerick/cibuildwheel@v1.9.0
         env:
+          CIBW_ARCHS: ${{matrix.arch}}
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
           CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
