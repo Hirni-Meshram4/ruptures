@@ -31,7 +31,7 @@ jobs:
       run: twine check dist/*
 
   build_wheels:
-    name: Build wheels on ${{matrix.platform_id}} for ${{matrix.arch}}
+    name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -43,27 +43,21 @@ jobs:
           - os: windows-latest
             bitness: 64
             platform_id: win_amd64
-            arch: auto
           - os: windows-latest
             bitness: 32
             platform_id: win32
-            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux_x86_64
-            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux2014_aarch64
-            arch: aarch64
           - os: ubuntu-latest
             bitness: 32
             platform_id: manylinux_i686
-            arch: auto
           - os: macos-latest
             bitness: 64
             platform_id: macosx_x86_64
-            arch: auto universal2
         exclude:
           - os: macos-latest
             bitness: 32
@@ -75,11 +69,10 @@ jobs:
       - name: Set up QEMU
         if: ${{ matrix.arch == 'aarch64' }}
         uses: docker/setup-qemu-action@v1
-      
+        
       - name: Build wheels
         uses: joerick/cibuildwheel@v1.9.0
         env:
-          CIBW_ARCHS_LINUX: ${{matrix.arch}}
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
           CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
