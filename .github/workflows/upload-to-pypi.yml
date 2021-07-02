@@ -43,21 +43,27 @@ jobs:
           - os: windows-latest
             bitness: 64
             platform_id: win_amd64
+            arch: auto
           - os: windows-latest
             bitness: 32
             platform_id: win32
+            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux_x86_64
+            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux2014_aarch64
+            arch: aarch64
           - os: ubuntu-latest
             bitness: 32
             platform_id: manylinux_i686
+            arch: auto
           - os: macos-latest
             bitness: 64
             platform_id: macosx_x86_64
+            arch: auto
         exclude:
           - os: macos-latest
             bitness: 32
@@ -73,6 +79,7 @@ jobs:
       - name: Build wheels
         uses: joerick/cibuildwheel@v2.0.0a4
         env:
+          CIBW_ARCHS: ${{matrix.archs}}
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
           CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
