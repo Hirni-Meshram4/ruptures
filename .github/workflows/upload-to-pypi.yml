@@ -37,6 +37,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         bitness: [32, 64]
+        arch: [auto, aarch64]
         python: [36, 37, 38, 39]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
@@ -69,6 +70,13 @@ jobs:
             bitness: 32
           - os: windows-latest
             python: 39
+          - os: macos-latest
+            arch: aarch64
+          - os: windows-latest
+            arch: aarch64
+          - os: ubuntu-latest
+            arch: aarch64
+            bitness: 32
     steps:
       - uses: actions/checkout@v1
 
