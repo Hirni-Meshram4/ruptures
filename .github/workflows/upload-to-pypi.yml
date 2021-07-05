@@ -87,7 +87,7 @@ jobs:
       - name: Build wheels
         uses: joerick/cibuildwheel@v2.0.0a4
         env:
-          CIBW_ARCHS: ${{matrix.arch}}
+          #CIBW_ARCHS: ${{matrix.arch}}
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
           CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
