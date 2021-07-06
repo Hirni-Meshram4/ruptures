@@ -31,71 +31,79 @@ jobs:
       run: twine check dist/*
 
   build_wheels:
-    name: Build wheels on ${{ matrix.platform_id }} for ${{ matrix.os }}
+    name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         bitness: [32, 64]
-        arch: [auto, aarch64]
-        python: [36]
+        python: [36, 37, 38, 39]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
           - os: windows-latest
             bitness: 64
             platform_id: win_amd64
-            arch: auto
           - os: windows-latest
             bitness: 32
             platform_id: win32
-            arch: auto
           - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux_x86_64
-            arch: auto
-          - os: ubuntu-latest
-            bitness: 64
-            platform_id: manylinux2014_aarch64
-            arch: aarch64
           - os: ubuntu-latest
             bitness: 32
             platform_id: manylinux_i686
-            arch: auto
           - os: macos-latest
             bitness: 64
             platform_id: macosx_x86_64
-            arch: auto
         exclude:
           - os: macos-latest
             bitness: 32
-         # - os: windows-latest
-          #  python: 39
-          - os: macos-latest
-            arch: aarch64
           - os: windows-latest
-            arch: aarch64
-          - os: ubuntu-latest
-            arch: aarch64
-            bitness: 32
+            python: 39
     steps:
       - uses: actions/checkout@v1
 
-      - name: Set up QEMU
-        if: ${{ matrix.arch == 'aarch64' }}
-        uses: docker/setup-qemu-action@v1
-        
       - name: Build wheels
-        uses: joerick/cibuildwheel@v2.0.0a4
+        uses: joerick/cibuildwheel@v1.9.0
         env:
-          CIBW_SKIP: cp27-* cp35-* cp26-* cp33-* cp34-*
-          CIBW_ARCHS: ${{matrix.arch}}
-          #CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
           CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
       - uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*.whl
 
+  build_aarch64_wheels:
+    name: Build wheels manylinux_aarch64
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [cp36-cp36m, cp37-cp37m, cp38-cp38, cp39-cp39]
+        arch: [aarch64]
+        platform_id: [manylinux_aarch64]
+       # include:
+          # Run 32 and 64 bits version in parallel for Linux and Windows
+        #  - os: ubuntu-latest
+         #   arch: aarch64
+          #  platform_id: manylinux_aarch64
+    steps:
+      - uses: actions/checkout@v1
+      
+      - name: Set up QEMU
+        #if: ${{ matrix.arch == 'aarch64' }}
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Build wheels
+        uses: joerick/cibuildwheel@v1.9.0
+        env:
+          CIBW_ARCHS_LINUX: ${{matrix.arch}}
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          # Manually force a version
+          CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ github.event.inputs.overrideVersion }}"
+      - uses: actions/upload-artifact@v2
+        with:
+          path: wheelhouse/*.whl
+          
   upload_all:
     needs: [build_wheels, make_sdist]
     runs-on: ubuntu-latest
