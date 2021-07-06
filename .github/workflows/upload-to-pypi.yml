@@ -38,7 +38,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         bitness: [32, 64]
         arch: [auto, aarch64]
-        python: [36, 37, 38, 39]
+        python: [36]
         include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
           - os: windows-latest
@@ -68,8 +68,8 @@ jobs:
         exclude:
           - os: macos-latest
             bitness: 32
-          - os: windows-latest
-            python: 39
+         # - os: windows-latest
+          #  python: 39
           - os: macos-latest
             arch: aarch64
           - os: windows-latest
@@ -87,6 +87,7 @@ jobs:
       - name: Build wheels
         uses: joerick/cibuildwheel@v2.0.0a4
         env:
+          CIBW_SKIP: cp27-* cp35-* cp26-* cp33-* cp34-*
           CIBW_ARCHS: ${{matrix.arch}}
           #CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           # Manually force a version
