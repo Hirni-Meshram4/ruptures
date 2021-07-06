@@ -78,14 +78,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [cp36-cp36m, cp37-cp37m, cp38-cp38, cp39-cp39]
-        arch: [aarch64]
-        platform_id: [manylinux_aarch64]
-       # include:
+        python: [36, 37, 38, 39]
+        #arch: [aarch64]
+        #platform_id: [manylinux_aarch64]
+        include:
           # Run 32 and 64 bits version in parallel for Linux and Windows
-        #  - os: ubuntu-latest
-         #   arch: aarch64
-          #  platform_id: manylinux_aarch64
+          - os: ubuntu-latest
+            arch: aarch64
+            platform_id: manylinux_aarch64
     steps:
       - uses: actions/checkout@v1
       
