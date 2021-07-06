@@ -79,10 +79,7 @@ jobs:
     strategy:
       matrix:
         python: [36, 37, 38, 39]
-        #arch: [aarch64]
-        #platform_id: [manylinux_aarch64]
         include:
-          # Run 32 and 64 bits version in parallel for Linux and Windows
           - os: ubuntu-latest
             arch: aarch64
             platform_id: manylinux_aarch64
@@ -90,7 +87,6 @@ jobs:
       - uses: actions/checkout@v1
       
       - name: Set up QEMU
-        #if: ${{ matrix.arch == 'aarch64' }}
         uses: docker/setup-qemu-action@v1
       
       - name: Build wheels
@@ -105,7 +101,7 @@ jobs:
           path: wheelhouse/*.whl
           
   upload_all:
-    needs: [build_wheels, make_sdist]
+    needs: [build_wheels, build_aarch64_wheels, make_sdist]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v2
